@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Search</title>
+    <style>
+        .search-container {
+            position: relative;
+            width: 300px;
+            margin: 20px;
+        }
+        #searchInput {
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+        }
+        #searchResults {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+        .result-item {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .result-item:hover {
+            background-color: #f0f0f0;
+        }
+        .input-group {
+            margin: 20px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            padding: 8px;
+            width: 200px;
+        }
+        .input-group input[readonly] {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search products...">
+        <div id="searchResults"></div>
+    </div>
+
+    <div class="input-group">
+        <label for="refProduct">Reference:</label>
+        <input type="text" id="refProduct" readonly>
+    </div>
+
+    <div class="input-group">
+        <label for="originalPrice">Original Price:</label>
+        <input type="text" id="originalPrice" readonly>
+    </div>
+
+    <div class="input-group">
+        <label for="discountPrice">Discount Price:</label>
+        <input type="text" id="discountPrice" readonly>
+    </div>
+
+    <script src="catalog.js"></script>
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+        const refProduct = document.getElementById('refProduct');
+        const originalPrice = document.getElementById('originalPrice');
+        const discountPrice = document.getElementById('discountPrice');
+
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.replace(/\s+/g, ' ').trim().toLowerCase();
+            
+            if (searchTerm.length < 2) {
+                searchResults.style.display = 'none';
+                return;
+            }
+
+            const matches = catalog.filter(product => 
+                product.description.toLowerCase().includes(searchTerm) ||
+                product.ref.toLowerCase().includes(searchTerm)
+            );
+
+            if (matches.length > 0) {
+                searchResults.innerHTML = matches
+                    .map(product => `
+                        <div class="result-item" data-ref="${product.ref}" 
+                             data-price="${product.price}" 
+                             data-discount="${product.discount}">
+                            ${product.ref} - ${product.description}
+                        </div>
+                    `)
+                    .join('');
+                searchResults.style.display = 'block';
+            } else {
+                searchResults.style.display = 'none';
+            }
+        });
+
+        searchResults.addEventListener('click', function(e) {
+            if (e.target.classList.contains('result-item')) {
+                const ref = e.target.dataset.ref;
+                const price = e.target.dataset.price;
+                const discount = e.target.dataset.discount;
+
+                refProduct.value = ref;
+                originalPrice.value = price;
+                discountPrice.value = discount;
+
+                searchInput.value = e.target.textContent.trim();
+                searchResults.style.display = 'none';
+
+                refProduct.removeAttribute('readonly');
+                originalPrice.removeAttribute('readonly');
+                discountPrice.removeAttribute('readonly');
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                searchResults.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html> 
