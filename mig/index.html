@@ -307,9 +307,9 @@
       justify-content: center;
     }
 
-    .customer-details {
+    /* .customer-details {
       transform: scale(0.7);
-    }
+    } */
 
     button {
       background-color: var(--accent-color);
@@ -402,7 +402,7 @@
 
     .product-info .original-price {
       color: var(--text-secondary);
-      text-decoration: line-through;
+      /* text-decoration: line-through; */
       font-size: 14px;
     }
 
@@ -657,6 +657,14 @@
       background-color: #151515;
       transform: scale(1, 0.85);
     }
+
+    #calculator-card {
+      display: none;
+    }
+
+    #calculator-card.hidden2 {
+      display: block;
+    }
   </style>
   <link href="mobile.css" rel="stylesheet">
 </head>
@@ -665,7 +673,7 @@
   <button class="toggle-save-btn" id="toggleSaveBtn" aria-label="Toggle save section"></button>
   <div id="container" class="container-centralizer">
 
-    <div class="calculator-card">
+    <div id="calculator-card" class="calculator-card">
       <div id="customer-info-container" class="customer-info-container">
         <div class="input-group" style="margin-bottom: 10px;">
           <label for="cpf" style="display: block; color: white; margin-bottom: 5px;">CPF:</label>
@@ -1169,7 +1177,7 @@
           customerDetails.style.backgroundColor = 'var(--bg-primary)';
           customerDetails.style.borderRadius = 'var(--border-radius)';
           customerDetails.style.justifyContent = 'center';
-          customerDetails.style.transform = 'scale(0.7)';
+          // customerDetails.style.transform = 'scale(0.7)';
 
           const customerInfoItems = [
             { label: 'CPF', value: record.customerInfo.cpf },
@@ -2353,14 +2361,16 @@
       const toggleBtn = document.getElementById('toggleSaveBtn');
       const saveData = document.getElementById('saveData');
       const container = document.getElementById('container');
-
+      const calculator = document.getElementById('calculator-card');
       // Initially hide the save section
       saveData.classList.add('hidden');
+      calculator.classList.add('hidden2');
 
       toggleBtn.addEventListener('click', function () {
         saveData.classList.toggle('hidden');
         container.classList.toggle('container-centralizer');
         container.classList.toggle('container');
+        calculator.classList.toggle('hidden2');
         this.classList.toggle('active');
       });
     });
